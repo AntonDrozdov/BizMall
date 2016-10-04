@@ -1,0 +1,128 @@
+﻿@using System.Collections.Generic
+@using Microsoft.AspNet.Http
+@using Microsoft.AspNet.Http.Authentication
+@using BizMall.Models.AccountModels
+
+@model BizMall.ViewModels.AdminCompanyGoods.CreateEditGoodViewModel
+@{
+    ViewData["Title"] = "Новая позиция";
+    Layout = "_AdminLayout";
+}
+
+<h3>@ViewData["Title"]</h3>
+<form asp-controller="AdminCompanyGoods" asp-action="EditGood" method="post" enctype="multipart/form-data" class="form-horizontal" role="form">
+    <hr />
+    @if (Model.Id != 0)
+    {
+        <input asp-for="Id" type="hidden" class="form-control" id="Id" readonly="readonly" Value ="@Model.Id" />
+    }
+    
+    <div class="form-group">
+        <label asp-for="Title" class="col-md-2 control-label">Наименование</label>
+        <div class="col-md-10" >
+            <input asp-for="Title" class="form-control col-md-10" placeholder="Наименование"  Value ="@Model.Title"/>
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="form-group">
+        <label asp-for="Description" class="col-md-2 control-label">Описание</label>
+        <div class="col-md-10">
+            <textarea asp-for="Description" class="form-control" style ="resize: vertical;" placeholder="Описание" Value ="@Model.Description"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
+    </div>
+
+    @Component.Invoke("AllCategories", Model)
+
+    <div class="form-group">
+        @*<label asp-for="Image" class="col-md-2 control-label">Изображение</label>*@
+        <label class="col-md-2 control-label">Изображения</label>
+
+        @if (Model.MainImageInBase64 == null)
+        {
+            <div class="form-group">
+                <div class="col-md-8">
+                    @*<div class="form-control-static">Нет изображения</div>*@
+                    <div style="float:left;margin:5px;padding:5px; border:1px solid #ccc; border-radius:5px;">
+                        <table>
+                            <tr>
+                                <td style="text-align:center;padding:3px;"><img height="100" width="100" src='' /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+        else
+        {
+            <div class="form-group">
+                <div class="col-md-8">
+                    @foreach (var imageViewModel in Model.ImageViewModels)
+                    {
+                        <div style="float:left;margin:5px;padding:5px; border:1px solid #ccc; border-radius:5px;">
+                            <table>
+                                <tr>
+                                    <td style="text-align:center;padding:3px;"><img height="100" src='@imageViewModel.ImageInBase64' /></td>
+                                    <td style="text-align:center;vertical-align:top; padding:3px;">
+                                        <a class='btn btn-default' asp-controller="AdminCompanyGoods" asp-action="DeleteGoodImage" asp-route-goodImageId="@imageViewModel.goodImageIds">
+                                            <span style="font-weight:300">x</span>
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                    }
+                </div>
+            </div>
+        }
+        <div class="col-md-2">
+        </div>
+        <div class="col-md-3">
+            <a class='btn btn-default' style="height:35px; margin-bottom:5px;">
+                Добавить изображение ...
+                @*<input asp-for="Image" type="file" id="loadfile" name="newimages" size="100"*@
+                <input type="file" id="loadfile" name="newimages" 
+                       style="position: absolute;
+                                z-index: 2; top: 0; left: 0; opacity: 0; background-color: transparent;
+                                color: transparent;"
+                       onchange='$("#upload-file-info").val($(this).val());'>
+            </a>
+        </div>
+        <div class="col-md-3">
+            @*<input asp-for="Image" class="form-control" id="upload-file-info" readonly="readonly" />*@
+            <input class="form-control" id="upload-file-info" readonly="readonly" />
+            @*<span class='label label-info' id="upload-file-info"></span>*@
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10 text-right">
+                        <button type="submit" class="btn btn-primary  col-md-2 " style="margin-top: 5px;">Сохранить</button>
+                        <a class='btn btn-default col-md-2 ' style="margin-left: 5px; margin-top: 5px;" asp-controller="AdminCompanyGoods" asp-action="Goods">Назад</a>
+                    </div>
+                </div>
+
+                @*<script type="text/javascript">
+                        $(document).ready(function () {
+                            $("#loadfile").change(function () {
+                                alert($(this).val());
+                                $("#filename").html($(this).val());
+                                return;
+                            });
+                        });
+                    </script>*@
+</form>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+ 

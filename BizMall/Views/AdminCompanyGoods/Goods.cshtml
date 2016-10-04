@@ -1,0 +1,57 @@
+﻿@{
+    Layout = "_AdminLayout";
+}
+
+<br />
+
+<!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+<div >
+    <a asp-controller="AdminCompanyGoods" asp-action="Goods" asp-route-goodsStatus="1"><span style="font-weight:bold">Активные</span></a>
+    <a asp-controller="AdminCompanyGoods" asp-action="Goods" asp-route-goodsStatus="0"><span style="font-weight:bold">НеАктивные</span></a>
+</div>
+
+<br />
+
+
+<!--КНОПКА СОЗДАНИЯ ПОЗИЦИИ-->
+<div class="col-md-10">
+    <a class="btn btn-primary" role="button" asp-controller="AdminCompanyGoods" asp-action="EditGood">Новая позиция</a>
+</div>
+
+<br />
+<br />
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+        <tr>
+            <th>Изображение</th>
+            <th>Название</th>
+            <th>Категория</th>
+            <th>Опции</th>
+        </tr>
+        </thead>
+        @foreach (var good in ViewBag.GoodsVM)
+        {
+            <tr>
+                <td>
+                    <img  height="100" src='@good.MainImageInBase64'/>
+                    @*<img height="100" width="100" src='@Url.Action("GetGoodMainImage", "AdminCompanyGoods", new {GoodId = good.Id})'/>*@
+                </td>
+                <td><a asp-controller="AdminCompanyGoods" asp-action="EditGood" asp-route-goodId="@good.Id">@good.Title</a></td>
+                @if (@good.Category.ParentCategory != null)
+                {
+                    <td>@good.Category.ParentCategory.Title/@good.Category.Title</td>
+                }
+                else
+                {
+                    <td>@good.Category.Title</td>
+                }
+                <td style="width: 10%;"><a class="btn btn-primary" role="button" asp-controller="AdminCompanyGoods" asp-action="DeleteGood" asp-route-goodId="@good.Id">Удалить</a></td>
+            </tr>
+        }
+    </table>
+</div>
+
+
+
+
